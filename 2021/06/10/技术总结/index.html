@@ -6,15 +6,17 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
   <link rel="dns-prefetch" href="http://example.com">
-  <title>Archives: 2021/6 | 维尼的博客</title>
+  <title>技术总结 | 维尼的博客</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="JAVA后端程序媛一枚">
-<meta property="og:type" content="website">
-<meta property="og:title" content="维尼的博客">
-<meta property="og:url" content="http://example.com/archives/2021/06/index.html">
+  <meta name="description" content="垃圾回收GC    垃圾回收算法包括：标记-清除算法，复制算法，标记-整理算法，分代收集算法。    线程私有的区域(程序技术器+Java虚拟机栈+本地方法栈)等到线程结束时（栈帧出栈时）会自动被释放，空间比较容易清理。而线程共享的java堆和方法区中的空间较大而且没有线程的回收容易产生很多垃圾信息，GC垃圾回收真正关心的就是这部分。    回收算法        标记—清除算法:">
+<meta property="og:type" content="article">
+<meta property="og:title" content="技术总结">
+<meta property="og:url" content="http://example.com/2021/06/10/%E6%8A%80%E6%9C%AF%E6%80%BB%E7%BB%93/index.html">
 <meta property="og:site_name" content="维尼的博客">
-<meta property="og:description" content="JAVA后端程序媛一枚">
+<meta property="og:description" content="垃圾回收GC    垃圾回收算法包括：标记-清除算法，复制算法，标记-整理算法，分代收集算法。    线程私有的区域(程序技术器+Java虚拟机栈+本地方法栈)等到线程结束时（栈帧出栈时）会自动被释放，空间比较容易清理。而线程共享的java堆和方法区中的空间较大而且没有线程的回收容易产生很多垃圾信息，GC垃圾回收真正关心的就是这部分。    回收算法        标记—清除算法:">
 <meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2021-06-10T08:32:56.000Z">
+<meta property="article:modified_time" content="2021-06-10T08:34:40.601Z">
 <meta property="article:author" content="weini">
 <meta property="article:tag" content="程序媛,极客,编程,代码">
 <meta name="twitter:card" content="summary">
@@ -153,76 +155,221 @@
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            
+            <article id="post-技术总结" class="article article-type-post " itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
   
+    <h1 class="article-title" itemprop="name">
+      技术总结
+    </h1>
   
-    
-    
-      
-      
-      <section class="archives-wrap">
-        <div class="archive-year-wrap">
-          <a href="/archives/2021" class="archive-year">2021</a>
-        </div>
-        <div class="archives">
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2021/06/10/%E6%8A%80%E6%9C%AF%E6%80%BB%E7%BB%93/" class="archive-article-date">
+
+        
+        <a href="/2021/06/10/%E6%8A%80%E6%9C%AF%E6%80%BB%E7%BB%93/" class="archive-article-date">
   	<time datetime="2021-06-10T08:32:56.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2021-06-10</time>
 </a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2021/06/10/%E6%8A%80%E6%9C%AF%E6%80%BB%E7%BB%93/">技术总结</a>
-    </h1>
-  
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>垃圾回收GC<br>    垃圾回收算法包括：标记-清除算法，复制算法，标记-整理算法，分代收集算法。<br>    线程私有的区域(程序技术器+Java虚拟机栈+本地方法栈)等到线程结束时（栈帧出栈时）会自动被释放，空间比较容易清理。<br>而线程共享的java堆和方法区中的空间较大而且没有线程的回收容易产生很多垃圾信息，GC垃圾回收真正关心的就是这部分。<br>    回收算法<br>        标记—清除算法:<br>            标记/清除算法，分为“标记”和“清除”两个阶段：首先标记出所有需要回收的对象，在标记完成后统一回收所有被标记的对象。<br>            标记阶段<br>                标记的过程其实就是前面介绍的可达性分析算法的过程，遍历所有的GC Roots对象，对从GC Roots对象可达的对象都打上一个标识，一般是在对象的header中，将其记录为可达对象；<br>            清除阶段<br>                清除的过程是对堆内存进行遍历，如果发现某个对象没有被标记为可达对象，则将其回收。</p>
+<pre><code>    复制算法:
+        将内存划分为大小相等的两块，每次只使用其中一块，当这一块内存用完了就将还存活的对象复制到另一块上面，然后再把使用过的内存空间进行一次清理。
+        将内存分为一块较大的 Eden 空间和两块较小的 Survior 空间，每次使用 Eden 空间和其中一块 Survivor。在回收时，将 Eden 和 Survivor 中还存活着的对象一次性复制到另一块 Survivor 空间上，最后清理 Eden 和 使用过的那一块 Survivor。HotSpot 虚拟机的 Eden 和 Survivor 的大小比例默认为 8:1，保证了内存的利用率达到 90 %。如果每次回收有多于 10% 的对象存活，那么一块 Survivor 空间就不够用了，此时需要依赖于老年代进行分配担保，也就是借用老年代的空间。
+        
+    分代收集算法:
+        分代回收算法实际上是把复制算法和标记整理法的结合，并不是真正一个新的算法，一般分为：老年代和新生代，老年代就是很少垃圾需要进行回收的，新生代就是有很多的内存空间需要回收，所以不同代就采用不同的回收算法，以此来达到高效的回收算法。
+        新生代：由于新生代产生很多临时对象，大量对象需要进行回收，所以采用复制算法是最高效的。
+        老年代：回收的对象很少，都是经过几次标记后都不是可回收的状态转移到老年代的，所以仅有少量对象需要回收，故采用标记清除或者标记整理算法。
+    标记—整理算法:
+        标记—整理算法和标记—清除算法一样，但是标记—整理算法不是把存活对象复制到另一块内存，而是把存活对象往内存的一端移动，然后直接回收边界以外的内存，因此其不会产生内存碎片。标记—整理算法提高了内存的利用率，并且它适合在收集对象存活时间较长的老年代。
+        
+对象是否存活？
+    引用计数算法
+        给对象中添加一个引用计数器，每当有一个地方引用它时，计数器+1，当引用失效，计数器-1.任何时刻计数器为0的对象就是不可能再被使用的。
+        优点：实现简单，判定效率高效，被actionscript3和python中广泛应用。
+        缺点：无法解决对象之间的相互引用问题。java没有采纳
+            1 jdk从1.2开始增加了多种引用方式：软引用、弱引用、虚引用，且在不同引用情况下程序应进行不同的操作。如果我们只采用一个引用计数法来计数无法准确的区分这么多种引用的情况。
+            2 如果一个对象A持有对象B，而对象B也持有一个对象A，那发生了类似操作系统中死锁的循环持有，这种情况下A与B的counter恒大于1，会使得GC永远无法回收这两个对象。
+    可达性分析算法
+        通过一系列称为“GC Roots”的对象作为起始点，从这些节点开始向下搜索，搜索所走过的路径称为引用链，当一个对象到GCRoots没有任何引用链相连的时候，则证明此对象是不可用的。
+        在java中，可以作为GCRoot的对象包括以下几种：
+             虚拟机栈（（栈帧中的本地变量表））中引用的对象。
+            方法区中静态属性引用的对象。
+            方法区中常量引用的对象。
+             本地方法中JNI引用的对象。
+        真正的宣告一个对象死亡。至少要经历两次标记：
+            第一次：对象可达性分析之后，发现没有与GCRoots相连接，此时会被第一次标记并筛选。
+            第二次：对象没有覆盖finalize（）方法，或者finalize（）方法已经被虚拟机调用过，此时会被认定为没必要执行。
+        java中的主流虚拟机HotSpot采用可达性分析算法来确定一个对象的状态。
+</code></pre>
+<p>实现该算法时采用了哪些结构<br>                使用OopMap记录并枚举根节点<br>                    HotSpot首先需要枚举所有的GC Roots根节点，虚拟机栈的空间不大，遍历一次的时间或许可以接受，但是方法区的空间很可能就有数百兆，遍历一次需要很久。更加关键的是，当我们遍历所有GC Roots根节点时，我们需要暂停所有用户线程，因为我们需要一个此时此刻的”虚拟机快照”，如果我们不暂停用户线程，那么虚拟机仍处于运行状态，我们无法确保能够正确遍历所有的根节点。所以此时的时间开销过大更是我们不能接受的。<br>                    基于这种情况，HotSpot实现了一种叫做OopMap的数据结构，这种数据结构在类加载完成时把对象内的偏移量是什么类型计算出，并且存放下位置，当需要遍历根结点时访问所有OopMap即可。（在JIT编译的时候，会在特定的位置记住栈和寄存器中什么地方存在引用，GC直接对这些引用进行扫描。）<br>                用安全点Safepoint约束根节点<br>                    如果将每个符合GC Roots条件的对象都存放进入OopMap中，那么OopMap也会变得很大，而且其中很多对象很可能会发生一些变化，这些变化使得维护这个映射表很困难。实际上，HotSpot并没有为每一个对象都创建OopMap，只在特定的位置上创建了这些信息，这些位置称为安全点（Safepoints）。<br>                    为了保证虚拟机中安全点的个数不算太多也不是太少，主要决定安全点是否被建立的因素是时间。当进行了耗时的操作时，比如方法调用、循环跳转等时会产生安全点。此外，HotSpot虚拟机在安全点的基础上还增加了安全区域的概念，安全区域是安全点的扩展。在一段安全区域中能够实现安全点不能达成的效果。<br>    方法区中有没有垃圾回收？<br>        方法区有垃圾回收，但是回收的效率低。<br>            方法区只要回收废弃的常量和无用的类。<br>            如果没有任何地方对此常量进行引用，则此常量就会被回收。<br>        方法区中哪些类是无用的类？<br>            (1)java堆中不存在该类的任何实例。<br>            (2)加载该类的ClassLoader已经被回收。<br>            (3)该类的class对象没有任何地方被引用。<br>            满足以上三个条件的类可以被回收，而不是和java堆中的对象一样必然会被回收<br>    对象的创建<br>        如何创建？<br>            当虚拟机遇到new指令的时候，先去检查这个指令的参数是否能够在常量池中定位到一个符号的引用(类的全限定名)，在判断这个符号引用代表的类是否已经被加载，如果没有被加载，将会进行类的加载操作。通过加载检查后，将对类分配内存。<br>        创建时内存分配方式？<br>            1、指针碰撞，对象需要多大的内存在类加载完成的时候就已经确定，此内存分配方式相当于，将已分配的内存放在放在一边，为分配的内存放在另一边，中间用指针进行隔离，当需要分配内存的时候只需要移动指针即可。<br>            2、空闲列表，即维护一个列表，记录内存中还没有分配的内存位置</p>
+<p>浅蓝色为：所有线程共享的数据区<br>白色为：线程隔离的数据区</p>
+<p>伪共享<br>    @sun.misc.Contended</p>
+<p>Java堆(Heap)：堆是jvm内存中最大一块。<br>它是被共享，存放对象实例。也被称为“gc堆”。<br>    被所有线程共享，在虚拟机启动时创建，用来存放对象实例，几乎所有的对象实例都在这里分配内存。对于大多数应用来说，Java堆（Java Heap）是Java虚拟机所管理的内存中最大的一块。<br>            Java堆是垃圾收集器管理的主要区域，因此很多时候也被称做“GC堆”。如果从内存回收的角度看，由于现在收集器基本都是采用的分代收集算法，所以Java堆中还可以细分为：新生代和老年代；新生代又有Eden空间、From Survivor空间、To Survivor空间三部分。<br>            Java 堆不需要连续内存，并且可以通过动态增加其内存，增加失败会抛出 OutOfMemoryError 异常。<br>    细分<br>        新生代<br>            Eden空间<br>            From Survivor空间<br>            To Survivor空间<br>            Eden空间、From Survivor空间、To Survivor空间，默认比例为8:1:1。<br>            GC回收：由于新生代产生很多临时对象，大量对象需要进行回收，所以采用复制算法是最高效的。<br>        老年代<br>            GC回收：回收的对象很少，都是经过几次标记后都不是可回收的状态转移到老年代的，所以仅有少量对象需要回收，故采用标记清除或者标记整理算法。<br>        永久代？？？有么<br>    对象<br>        在内存中布局<br>            对象头（Header）<br>                markWord<br>                    用于存储对象自身的运行时数据，如哈希码（HashCode）、GC分代年龄、锁状态标志、线程持有的锁、偏向线程ID、偏向时间戳等，这部分数据的长度在32位和64位的虚拟机（未开启压缩指针）中分别为32bit和64bit，官方称它为“MarkWord”。<br>                        对象的markword和java各种类型的锁密切相关；<br>                        markword数据的长度在32位和64位的虚拟机（未开启压缩指针）中分别为32bit和64bit，它的最后2bit是锁状态标志位，用来标记当前对象的状态，对象的所处的状态，决定了markword存储的内容，如下表所示:</p>
+<pre><code>            klass 
+                对象指向它的类元数据的指针，虚拟机通过这个指针来确定这个对象是哪个类的实例
+            数组长度（只有数组对象有） 
+                如果对象是一个数组, 那在对象头中还必须有一块数据用于记录数组长度.
+        实例数据（Instance Data）
+            实例数据部分是对象真正存储的有效信息，也是在程序代码中所定义的各种类型的字段内容。无论是从父类继承下来的，还是在子类中定义的，都需要记录起来。
+        对齐填充（Padding）
+            第三部分对齐填充并不是必然存在的，也没有特别的含义，它仅仅起着占位符的作用。由于HotSpot VM的自动内存管理系统要求对象起始地址必须是8字节的整数倍，换句话说，就是对象的大小必须是8字节的整数倍。而对象头部分正好是8字节的倍数（1倍或者2倍），因此，当对象实例数据部分没有对齐时，就需要通过对齐填充来补全。
+    对象大小计算
+        1. 在32位系统下，存放Class指针的空间大小是4字节，MarkWord是4字节，对象头为8字节。 
+        2. 在64位系统下，存放Class指针的空间大小是8字节，MarkWord是8字节，对象头为16字节。 
+        3. 64位开启指针压缩的情况下，存放Class指针的空间大小是4字节，MarkWord是8字节，对象头为12字节。 数组长度4字节+数组对象头8字节(对象引用4字节（未开启指针压缩的64位为8字节）+数组markword为4字节（64位未开启指针压缩的为8字节）)+对齐4=16字节。 
+        4. 静态属性不算在对象大小内。
+    对象模型：OOP-Klass模型
+        它是描述Java对象实例的模型,分为2部分
+            klass
+                类被加载到内存时，就被封装成了klass，klass包含类的元数据信息，像类的方法、常量池这些信息都是存在klass里的，你可以认为它是java里面的java.lang.Class对象，记录了类的全部信息；
+            oop
+                OOP（Ordinary Object Pointer）指的是普通对象指针，它包含MarkWord 和元数据指针，MarkWord用来存储当前指针指向的对象运行时的一些状态数据；元数据指针则指向klass,用来告诉你当前指针指向的对象是什么类型，也就是使用哪个类来创建出来的；
+            那么为何要设计这样一个一分为二的对象模型呢？这是因为HotSopt JVM的设计者不想让每个对象中都含有一个vtable（虚函数表），所以就把对象模型拆成klass和oop，其中oop中不含有任何虚函数，而klass就含有虚函数表，可以进行method dispatch。
+    
+        通过栈帧中的对象引用reference找到Java堆中的对象，再通过对象的instanceOop中的元数据指针klass来找到方法区中的instanceKlass，从而确定该对象的类型。
+        执行new A()的时候，JVM 做了什么工作。首先，如果这个类没有被加载过，JVM就会进行类的加载，并在JVM内部创建一个instanceKlass对象表示这个类的运行时元数据（相当于Java层的Class对象）。初始化对象的时候（执行invokespecial A::），JVM就会创建一个instanceOopDesc对象表示这个对象的实例，然后进行Mark Word的填充，将元数据指针指向Klass对象，并填充实例变量。元数据—— instanceKlass 对象会存在元空间（方法区），而对象实例—— instanceOopDesc 会存在Java堆。Java虚拟机栈中会存有这个对象实例的引用。
+</code></pre>
+<p>方法区（Method Area）：方法区也是共享的内存区域。<br>它主要存储已被虚拟机加载的类信息、常量、静态变量、即时编译器（jit）编译后的代码数据。<br>    运行时常量池<br>        运行时常量池是方法区的一部分。<br>        Class 文件中的常量池（编译器生成的各种字面量和符号引用）会在类加载后被放入这个区域。<br>        除了在编译期生成的常量，还允许动态生成，例如 String 类的 intern()。这部分常量也会被放入运行时常量池<br>    用于存放已被加载的类信息、常量、静态变量、即时编译器编译后的代码等数据<br>    和 Java 堆一样不需要连续的内存，并且可以动态扩展，动态扩展失败一样会抛出 OutOfMemoryError 异常。<br>    对这块区域进行垃圾回收的主要目标是对常量池的回收和对类的卸载，但是一般比较难实现，HotSpot 虚拟机把它当成永久代（Permanent Generation）来进行垃圾回收。<br>    方法区逻辑上属于堆的一部分，但是为了与堆进行区分，通常又叫“非堆”。</p>
+<p>Java虚拟机栈（JVM Stacks）<br>    线程私有的，它的生命周期与线程相同<br>    虚拟机栈描述的是Java方法执行的内存模型：每个方法被执行的时候都会同时创建一个栈帧（Stack Frame）用于存储局部变量表、操作栈、动态链接、方法出口等信息。每一个方法被调用直至执行完成的过程，就对应着一个栈帧在虚拟机栈中从入栈到出栈的过程。<br>    该区域可能抛出以下异常：当线程请求的栈深度超过最大值，会抛出 StackOverflowError 异常；<br>栈进行动态扩展时如果无法申请到足够内存，会抛出 OutOfMemoryError 异常。<br>    栈帧<br>        局部变量表<br>            局部变量表存放了编译期可知的各种基本数据类型（boolean、byte、char、short、int、float、long、double）、对象引用（reference类型），它不等同于对象本身，根据不同的虚拟机实现，它可能是一个指向对象起始地址的引用指针，也可能指向一个代表对象的句柄或者其他与此对象相关的位置）和returnAddress类型（指向了一条字节码指令的地址）。局部变量表所需的内存空间在编译期间完成分配，当进入一个方法时，这个方法需要在帧中分配多大的局部变量空间是完全确定的，在方法运行期间不会改变局部变量表的大小。<br>        操作书栈<br>        动态链接<br>    栈帧2</p>
+<p>本地方法栈：<br>类似虚拟机栈，它调用的是是native方法。<br>    与虚拟机栈非常相似，其区别不过是虚拟机栈为虚拟机执行Java方法（也就是字节码）服务，而本地方法栈则是为虚拟机使用到的Native 方法服务。虚拟机规范中对本地方法栈中的方法使用的语言、使用方式与数据结构并没有强制规定，因此具体的虚拟机可以自由实现它。甚至有的虚拟机（譬如Sun HotSpot 虚拟机）直接就把本地方法栈和虚拟机栈合二为一。<br>    与虚拟机栈一样，本地方法栈区域也会抛出StackOverflowError和OutOfMemoryError异常。</p>
+<p>程序计数器（Program Counter Register）<br>：当前线程所执行的字节码的行号指示器。<br>    线程私有，它的生命周期与线程相同。<br>    可以看做是当前线程所执行的字节码的行号指示器。<br>    在虚拟机的概念模型里（仅是概念模型，各种虚拟机可能会通过一些更高效的方式去实现），字节码解释器工作时就是通过改变这个计数器的值来选取下一条需要执行的字节码指令，如：分支、循环、跳转、异常处理、线程恢复（多线程切换）等基础功能<br>    如果线程正在执行的是一个Java方法，这个计数器记录的是正在执行的虚拟机字节码指令的地址；如果正在执行的是Natvie方法，这个计数器值则为空（undefined）<br>    程序计数器中存储的数据所占空间的大小不会随程序的执行而发生改变，所以此区域不会出现OutOfMemoryError的情况。</p>
+<p>直接内存（Direct Memory）<br>    直接内存（Direct Memory）并不是虚拟机运行时数据区的一部分，也不是Java虚拟机规范中定义的内存区域，但是这部分内存也被频繁地使用，而且也可能导致OutOfMemoryError 异常出现。<br>    在 JDK 1.4 中新加入了 NIO 类，引入了一种基于通道（Channel）与缓冲区（Buffer）的<br>    I/O方式，它可以使用 Native 函数库直接分配堆外内存，然后通过一个存储在 Java 堆里的 DirectByteBuffer<br>    对象作为这块内存的引用进行操作。这样能在一些场景中显著提高性能，因为避免了在Java 堆和 Native 堆中来回复制数据。</p>
+<p>JVM = 类加载器(classloader) + 执行引擎(execution engine) + 运行时数据区域(runtime data area) </p>
+<p>线程私有的区域(程序技术器+Java虚拟机栈+本地方法栈)等到线程结束时（栈帧出栈时）会自动被释放，空间比较容易清理。<br>而线程共享的java堆和方法区中的空间较大而且没有线程的回收容易产生很多垃圾信息，GC垃圾回收真正关心的就是这部分。</p>
 
-        <div class="article-info info-on-right">
-          
-          
+      
 
+      
+        <div class="page-reward">
+          <a href="javascript:;" class="page-reward-btn tooltip-top">
+            <div class="tooltip tooltip-east">
+            <span class="tooltip-item">
+              赏
+            </span>
+            <span class="tooltip-content">
+              <span class="tooltip-text">
+                <span class="tooltip-inner">
+                  <p class="reward-p"><i class="icon icon-quo-left"></i>谢谢你请我吃糖果<i class="icon icon-quo-right"></i></p>
+                  <div class="reward-box">
+                    
+                    
+                  </div>
+                </span>
+              </span>
+            </span>
+          </div>
+          </a>
         </div>
-        <div class="clearfix"></div>
-    </header>
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+      
+
+      
+
+      
+        
+<div class="share-btn share-icons tooltip-left">
+  <div class="tooltip tooltip-east">
+    <span class="tooltip-item">
+      <a href="javascript:;" class="share-sns share-outer">
+        <i class="icon icon-share"></i>
+      </a>
+    </span>
+    <span class="tooltip-content">
+      <div class="share-wrap">
+        <div class="share-icons">
+          <a class="weibo share-sns" href="javascript:;" data-type="weibo">
+            <i class="icon icon-weibo"></i>
+          </a>
+          <a class="weixin share-sns wxFab" href="javascript:;" data-type="weixin">
+            <i class="icon icon-weixin"></i>
+          </a>
+          <a class="qq share-sns" href="javascript:;" data-type="qq">
+            <i class="icon icon-qq"></i>
+          </a>
+          <a class="douban share-sns" href="javascript:;" data-type="douban">
+            <i class="icon icon-douban"></i>
+          </a>
+          <a class="qzone share-sns" href="javascript:;" data-type="qzone">
+            <i class="icon icon-qzone"></i>
+          </a>
+          <a class="facebook share-sns" href="javascript:;" data-type="facebook">
+            <i class="icon icon-facebook"></i>
+          </a>
+          <a class="twitter share-sns" href="javascript:;" data-type="twitter">
+            <i class="icon icon-twitter"></i>
+          </a>
+          <a class="google share-sns" href="javascript:;" data-type="google">
+            <i class="icon icon-google"></i>
+          </a>
+        </div>
+      </div>
+    </span>
+  </div>
+</div>
+
+<div class="page-modal wx-share js-wx-box">
+    <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <div class="wx-qrcode">
+      <img src="//pan.baidu.com/share/qrcode?url=http://example.com/2021/06/10/%E6%8A%80%E6%9C%AF%E6%80%BB%E7%BB%93/" alt="微信分享二维码">
+    </div>
+</div>
+
+<div class="mask js-mask"></div>
+      
+      <div class="clearfix"></div>
+    </div>
   </div>
 </article>
+
   
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2021/06/10/redis%E9%9D%A2%E8%AF%95%E9%A2%98/" class="archive-article-date">
-  	<time datetime="2021-06-10T07:47:24.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2021-06-10</time>
-</a>
+<nav id="article-nav">
+  
+  
+    <a href="/2021/06/10/redis%E9%9D%A2%E8%AF%95%E9%A2%98/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">redis面试题</div>
+      <i class="icon-circle-right"></i>
+    </a>
+  
+</nav>
+
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
         </div>
-    	 
+        
+        
+    </div>
+</aside>
+
+
+
   
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2021/06/10/redis%E9%9D%A2%E8%AF%95%E9%A2%98/">redis面试题</a>
-    </h1>
+  
   
 
-        <div class="article-info info-on-right">
-          
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-  
-    </div></section>
   
 
-    
+  
+
+  
 
 
           </div>
@@ -245,8 +392,8 @@
 	var yiliaConfig = {
 		mathjax: false,
 		isHome: false,
-		isPost: false,
-		isArchive: true,
+		isPost: true,
+		isArchive: false,
 		isTag: false,
 		isCategory: false,
 		open_in_new: false,
